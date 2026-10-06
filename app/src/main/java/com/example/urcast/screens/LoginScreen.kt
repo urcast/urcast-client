@@ -23,7 +23,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(onGuestLogin: () -> Unit) {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -95,7 +95,7 @@ fun LoginScreen() {
 
             Button(
                 onClick = {
-                    // Guest login
+                    onGuestLogin()
                 }
             ) {
                 Text("Guest Login")

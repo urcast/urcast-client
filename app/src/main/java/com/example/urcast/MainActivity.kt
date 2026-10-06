@@ -4,9 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.urcast.screens.LoginScreen
+import com.example.urcast.screens.WeatherDashboardScreen
 import com.example.urcast.ui.theme.UrcastTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,7 +17,18 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             UrcastTheme {
-                LoginScreen()
+
+                var showDashboard by remember { mutableStateOf(false) }
+
+                if (showDashboard) {
+                    WeatherDashboardScreen()
+                } else {
+                    LoginScreen(
+                        onGuestLogin = {
+                            showDashboard = true
+                        }
+                    )
+                }
             }
         }
     }
@@ -26,6 +38,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LoginScreenPreview() {
     UrcastTheme {
-        LoginScreen()
+        LoginScreen(
+            onGuestLogin = {}
+        )
     }
 }
