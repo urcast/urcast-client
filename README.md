@@ -77,8 +77,8 @@ git clone https://github.com/urcast/urcast-client.git
 
 ## Team & Roles
 
+* **Pijus (PM)** – Back-End, Version Control
+* **Raivis** – Database, Back-End
 * **Anastasija** – Front-End, UI/UX/UD, Database
-* **Kornel** – UI/UX/UD, Testing, Hardware
 * **Leonas** – Hardware, Front-End
-* **Pijus** – Back-End/API, Version Control
-* **Raivis** – Database, Back-end
+* **Kornel** – UI/UX/UD, Testing, Hardware
