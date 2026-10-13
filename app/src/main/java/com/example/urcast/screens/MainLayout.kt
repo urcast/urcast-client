@@ -13,6 +13,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.urcast.R
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material3.Icon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +57,24 @@ fun MainLayout(
                     },
                     label = { Text("Home") }
                 )
+
+
+                NavigationBarItem(
+                    selected = false,
+                    onClick = {
+                        // TODO: Open the Chat screen
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Chat,
+                            contentDescription = "Chat"
+                        )
+                    },
+                    label = {
+                        Text("Chat")
+                    }
+                )
+
 
                 NavigationBarItem(
                     selected = false,
