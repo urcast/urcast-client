@@ -1,3 +1,4 @@
+
 package com.example.urcast.screens
 
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,23 +24,20 @@ fun WeatherDashboardScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Welcome message
+        Text("Welcome to urcast!")
+        Text("Your local weather dashboard")
 
-        // App name
-        Text(
-            text = "urcast"
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         // Page title
-        Text(
-            text = "Local Weather"
-        )
+        Text("Local Weather")
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         // Main temperature
         Card(
@@ -49,27 +49,19 @@ fun WeatherDashboardScreen() {
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                Text(
-                    text = " // input temperature here "
-                )
-
+                Text("-- °C")
                 Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Current Temperature"
-                )
+                Text("Current Temperature")
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Weather readings
+        // Humidity and light readings
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
             Card(
                 modifier = Modifier.weight(1f)
             ) {
@@ -80,12 +72,8 @@ fun WeatherDashboardScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text("Humidity")
-
                     Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = " // input humidity here "
-                    )
+                    Text("-- %")
                 }
             }
 
@@ -99,17 +87,13 @@ fun WeatherDashboardScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text("Light")
-
                     Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = " // input light here "
-                    )
+                    Text("-- lux")
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Location
         Card(
@@ -121,20 +105,14 @@ fun WeatherDashboardScreen() {
                     .padding(16.dp)
             ) {
                 Text("Location")
-
                 Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = " // input location here "
-                )
+                Text("No location data available")
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         // Last updated
-        Text(
-            text = " // input timestamp here "
-        )
+        Text("Last updated: --")
     }
 }

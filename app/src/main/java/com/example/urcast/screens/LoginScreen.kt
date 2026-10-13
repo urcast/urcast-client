@@ -21,12 +21,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import com.example.urcast.R
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.fillMaxWidth
 
 @Composable
 fun LoginScreen(onGuestLogin: () -> Unit) {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val buttonShape = RoundedCornerShape(12.dp)
 
     Column(
         modifier = Modifier
@@ -34,18 +45,18 @@ fun LoginScreen(onGuestLogin: () -> Unit) {
             .padding(24.dp)
     ) {
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            TextButton(
-                onClick = {
-                    // Sign up as contributor
-                }
-            ) {
-                Text("Sign Up as Contributor")
-            }
-        }
+//        Row(
+//            modifier = Modifier.fillMaxWidth(),
+//            horizontalArrangement = Arrangement.End
+//        ) {
+//            TextButton(
+//                onClick = {
+//                    // Sign up as contributor
+//                }
+//            ) {
+//                Text("Sign Up as Contributor")
+//            }
+//        }
 
         // Login content
         Column(
@@ -53,9 +64,13 @@ fun LoginScreen(onGuestLogin: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
-            Text(
-                text = "urcast"
+            Image(
+                painter = painterResource(id = R.drawable.urcast_logo),
+                contentDescription = "urcast logo",
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .height(120.dp),
+                contentScale = ContentScale.Fit
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -84,21 +99,36 @@ fun LoginScreen(onGuestLogin: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = {
-                    // Login
-                }
+                onClick = { /* Login */ },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = buttonShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF176B70),
+                    contentColor = Color.White
+                )
             ) {
                 Text("Log In")
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
             Button(
-                onClick = {
-                    onGuestLogin()
-                }
+                onClick = { onGuestLogin() },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = buttonShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF176B70),
+                    contentColor = Color.White
+                )
             ) {
-                Text("Guest Login")
+                Text("Viewer Login")
+            }
+
+            TextButton(
+                onClick = { /* Sign up */ },
+                shape = buttonShape
+            ) {
+                Text("Sign Up as Contributor")
             }
         }
     }

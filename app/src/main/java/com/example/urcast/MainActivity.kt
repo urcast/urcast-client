@@ -1,12 +1,17 @@
+
 package com.example.urcast
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.urcast.screens.LoginScreen
+import com.example.urcast.screens.MainLayout
 import com.example.urcast.screens.WeatherDashboardScreen
 import com.example.urcast.ui.theme.UrcastTheme
 
@@ -16,12 +21,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            UrcastTheme {
+            var showDashboard by remember { mutableStateOf(false) }
+            var isDarkTheme by remember { mutableStateOf(false) }
 
-                var showDashboard by remember { mutableStateOf(false) }
-
+            UrcastTheme(darkTheme = isDarkTheme) {
                 if (showDashboard) {
-                    WeatherDashboardScreen()
+                    MainLayout(
+                        isDarkTheme = isDarkTheme,
+                        onThemeChange = { isDarkTheme = it }
+                    ) { innerPadding ->
+                        Box(
+                            modifier = Modifier.padding(innerPadding)
+                        ) {
+                            WeatherDashboardScreen()
+                        }
+                    }
                 } else {
                     LoginScreen(
                         onGuestLogin = {
@@ -38,8 +52,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LoginScreenPreview() {
     UrcastTheme {
-        LoginScreen(
-            onGuestLogin = {}
-        )
+        LoginScreen(onGuestLogin = {})
     }
 }
