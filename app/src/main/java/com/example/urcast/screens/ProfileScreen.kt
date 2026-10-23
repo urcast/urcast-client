@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,11 +21,26 @@ fun ProfileScreen(
     onLoginSuccess: (String) -> Unit,
     onLogout: () -> Unit
 ) {
+    // Controls whether RegisterNodeScreen is shown
+    var isRegisteringNode by remember { mutableStateOf(false) }
+
     if (!isLoggedIn) {
         // --- LOGGED OUT STATE: SHOW LOGIN ---
         LoginScreen(
             onGuestLogin = { onLoginSuccess("Guest User") },
             onLoginSuccess = { user -> onLoginSuccess(user) }
+        )
+    } else if (isRegisteringNode) {
+        // --- REGISTER NODE SCREEN STATE ---
+        RegisterNodeScreen(
+            onNodeRegistered = {
+                // Return to profile dashboard once registered
+                isRegisteringNode = false
+            },
+            onCancel = {
+                // Return to profile dashboard without registering
+                isRegisteringNode = false
+            }
         )
     } else {
         // --- LOGGED IN STATE: SHOW USER PROFILE & NODES ---
@@ -124,7 +138,7 @@ fun ProfileScreen(
 
             // Action Button to Add New Node
             Button(
-                onClick = { /* Add node action */ },
+                onClick = { isRegisteringNode = true }, // Navigates to RegisterNodeScreen
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Register New Weather Node")
