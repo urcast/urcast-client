@@ -201,29 +201,28 @@ fun MainLayout(
                 .padding(innerPadding)
         ) {
             when (selectedScreen) {
-                // Pass the currently selected node to the dashboard screen
-                "Home" -> WeatherDashboardScreen(node = selectedNode)
+                "Home" -> HomeScreen(node = selectedNode)
                 "Map" -> MapScreen()
                 "AI Chat" -> AIChatScreen()
                 "History" -> HistoryScreen()
                 "My Nodes" -> NodeListScreen()
-                "Profile" -> ProfileScreen()
+                "Profile" -> HomeScreen(node = selectedNode)//ProfileScreen()
             }
         }
     }
 }
 
-@Composable
-fun ProfileScreen() {
-    TODO("Not yet implemented")
-}
-
-@Composable
-fun HistoryScreen() {
-    TODO("Not yet implemented")
-}
-
-@Composable
-fun MapScreen() {
-    TODO("Not yet implemented")
-}
+//@Composable
+//fun ProfileScreen() {
+//    TODO("Not yet implemented")
+//}
+//
+//@Composable
+//fun HistoryScreen() {
+//    TODO("Not yet implemented")
+//}
+//
+//@Composable
+//fun MapScreen() {
+//    TODO("Not yet implemented")
+//}
