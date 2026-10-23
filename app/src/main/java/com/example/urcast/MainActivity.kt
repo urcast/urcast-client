@@ -21,21 +21,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            var showDashboard by remember { mutableStateOf(false) }
+            var showDashboard by remember { mutableStateOf(true) }
             var isDarkTheme by remember { mutableStateOf(false) }
 
             UrcastTheme(darkTheme = isDarkTheme) {
+
                 if (showDashboard) {
                     MainLayout(
                         isDarkTheme = isDarkTheme,
                         onThemeChange = { isDarkTheme = it }
-                    ) { innerPadding ->
-                        Box(
-                            modifier = Modifier.padding(innerPadding)
-                        ) {
-                            WeatherDashboardScreen()
-                        }
-                    }
+                    )
                 } else {
                     LoginScreen(
                         onGuestLogin = {
@@ -43,6 +38,7 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
+
             }
         }
     }
