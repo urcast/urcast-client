@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun LoginScreen(onGuestLogin: () -> Unit) {
@@ -100,12 +101,9 @@ fun LoginScreen(onGuestLogin: () -> Unit) {
 
             Button(
                 onClick = { /* Login */ },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = buttonShape,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF176B70),
-                    contentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Text("Log In")

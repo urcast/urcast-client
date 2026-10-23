@@ -1,4 +1,3 @@
-
 package com.example.urcast.screens
 
 import androidx.compose.foundation.layout.*
@@ -11,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun WeatherDashboardScreen() {
+fun WeatherDashboardScreen(node: WeatherNode) { // Add parameter here
 
     Column(
         modifier = Modifier
@@ -26,56 +25,71 @@ fun WeatherDashboardScreen() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Main temperature
+        // Main temperature card
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("Local Weather")
-                Text("-- °C")
-                Text("Last recorded: --")
-                Text("Location: Unavailable")
+                Text("YOUR LOCAL WEATHER")
+                Text("${node.temperature.toInt()}°C")
+                Text("Latest temperature reading")
+                Text("Location: ${node.name}")
+                Text("Last recorded: ${node.lastRecorded}")
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Humidity
+        Text("Current readings")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Temperature card
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Temperature")
+                Text("${node.temperature.toInt()}°C")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Humidity card
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("Humidity")
-                Text("-- %")
+                Text("${node.humidity}%")
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Pressure
+        // Pressure card
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("Pressure")
-                Text("-- hPa")
+                Text("${node.pressure} hPa")
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Light level
+        // Light level card
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("Light Level")
-                Text("Unavailable")
+                Text("Light level")
+                Text(node.lightLevel)
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // Map section
-        Text("Nearby Weather Nodes")
-        Text("Explore weather nodes on the map.")
+        Text("Nearby weather nodes")
+        Text("Explore available local sensors and select a location.")
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // History section
-        Text("Weather History")
-        Text("View temperature, humidity and pressure trends.")
+        Text("Weather trends")
+        Text("View recent changes in temperature, humidity and pressure.")
     }
 }
