@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.annotation.DrawableRes
 
 // 1. HARDCODED DATA MODEL & ATTRIBUTES
 data class WeatherNode(
@@ -32,7 +33,8 @@ data class WeatherNode(
     val humidity: Int,
     val pressure: Int,
     val lightLevel: String,
-    val lastRecorded: String
+    val lastRecorded: String,
+    @DrawableRes val iconResId: Int // Holds the drawable resource ID
 )
 
 val sampleNodes = listOf(
@@ -42,7 +44,8 @@ val sampleNodes = listOf(
         humidity = 72,
         pressure = 1013,
         lightLevel = "Available",
-        lastRecorded = "10:20 AM"
+        lastRecorded = "10:20 AM",
+        iconResId = R.drawable.cloudy_day_1 // Name of your converted XML file in res/drawable
     ),
     WeatherNode(
         name = "Drogheda Node",
@@ -50,7 +53,8 @@ val sampleNodes = listOf(
         humidity = 65,
         pressure = 1015,
         lightLevel = "High",
-        lastRecorded = "10:15 AM"
+        lastRecorded = "10:15 AM",
+        iconResId = R.drawable.day
     ),
     WeatherNode(
         name = "Dublin Node",
@@ -58,7 +62,8 @@ val sampleNodes = listOf(
         humidity = 80,
         pressure = 1009,
         lightLevel = "Low",
-        lastRecorded = "10:22 AM"
+        lastRecorded = "10:22 AM",
+        iconResId = R.drawable.rainy_1
     )
 )
 
