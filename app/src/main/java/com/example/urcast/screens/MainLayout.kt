@@ -7,10 +7,8 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.ShowChart
-import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -84,6 +82,9 @@ fun MainLayout(
         mutableStateOf(false)
     }
 
+    var isLoggedIn by remember { mutableStateOf(false) }
+    var activeUser by remember { mutableStateOf("Guest User") }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -128,25 +129,14 @@ fun MainLayout(
                 title = {
                     Image(
                         painter = painterResource(
-                            id = R.drawable.urcast_logo
+                            id = if (isDarkTheme) R.drawable.urcast_logo_dark else R.drawable.urcast_logo_light
                         ),
                         contentDescription = "urcast logo",
-                        modifier = Modifier.height(40.dp),
+                        modifier = Modifier.height(60.dp),
                         contentScale = ContentScale.Fit
                     )
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            selectedScreen = "Profile"
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = "Profile"
-                        )
-                    }
-
                     Switch(
                         checked = isDarkTheme,
                         onCheckedChange = onThemeChange
@@ -186,10 +176,10 @@ fun MainLayout(
                 )
 
                 NavigationBarItem(
-                    selected = selectedScreen == "My Nodes",
-                    onClick = { selectedScreen = "My Nodes" },
-                    icon = { Icon(Icons.Filled.Cloud, contentDescription = "My Nodes") },
-                    label = { Text("My Nodes") }
+                    selected = selectedScreen == "Profile",
+                    onClick = { selectedScreen = "Profile" },
+                    icon = { Icon(Icons.Filled.AccountCircle, contentDescription = "Profile") },
+                    label = { Text("Profile") }
                 )
             }
         }
@@ -206,7 +196,18 @@ fun MainLayout(
                 "AI Chat" -> AIChatScreen()
                 "History" -> HistoryScreen()
                 "My Nodes" -> NodeListScreen()
-                "Profile" -> HomeScreen(node = selectedNode)//ProfileScreen()
+                "Profile" -> ProfileScreen(
+                    isLoggedIn = isLoggedIn,
+                    username = activeUser,
+                    onLoginSuccess = { user ->
+                        activeUser = user
+                        isLoggedIn = true
+                    },
+                    onLogout = {
+                        isLoggedIn = false
+                        activeUser = "Guest User"
+                    }
+                )
             }
         }
     }

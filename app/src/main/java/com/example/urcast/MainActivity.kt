@@ -21,33 +21,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            var showDashboard by remember { mutableStateOf(true) }
             var isDarkTheme by remember { mutableStateOf(false) }
 
             UrcastTheme(darkTheme = isDarkTheme) {
-
-                if (showDashboard) {
-                    MainLayout(
-                        isDarkTheme = isDarkTheme,
-                        onThemeChange = { isDarkTheme = it }
-                    )
-                } else {
-                    LoginScreen(
-                        onGuestLogin = {
-                            showDashboard = true
-                        }
-                    )
-                }
-
+                MainLayout(
+                    isDarkTheme = isDarkTheme,
+                    onThemeChange = { isDarkTheme = it }
+                )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    UrcastTheme {
-        LoginScreen(onGuestLogin = {})
     }
 }
