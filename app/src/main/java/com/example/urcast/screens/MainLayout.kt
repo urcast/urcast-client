@@ -23,6 +23,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.annotation.DrawableRes
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 
 // 1. HARDCODED DATA MODEL & ATTRIBUTES
 data class WeatherNode(
@@ -137,10 +140,14 @@ fun MainLayout(
                     )
                 },
                 actions = {
-                    Switch(
-                        checked = isDarkTheme,
-                        onCheckedChange = onThemeChange
-                    )
+                    IconButton(
+                        onClick = { selectedScreen = "Settings" }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings"
+                        )
+                    }
                 }
             )
         },
