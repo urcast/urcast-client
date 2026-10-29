@@ -266,3 +266,17 @@ fun MainLayout(
         }
     }
 }
+//@Composable
+//fun ProfileScreen() {
+//    TODO("Not yet implemented")
+//}
+//
+//@Composable
+//fun HistoryScreen() {
+//    TODO("Not yet implemented")
+//}
+//
+//@Composable
+//fun MapScreen() {
+//    TODO("Not yet implemented")
+//}
