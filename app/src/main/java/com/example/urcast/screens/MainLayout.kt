@@ -1,3 +1,4 @@
+
 package com.example.urcast.screens
 
 import androidx.compose.foundation.Image
@@ -8,26 +9,22 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material3.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import com.example.urcast.R
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.TextButton
-import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.annotation.DrawableRes
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import com.example.urcast.R
 
-// 1. HARDCODED DATA MODEL & ATTRIBUTES
+// Weather node data model
 data class WeatherNode(
     val name: String,
     val temperature: Double,
@@ -35,9 +32,10 @@ data class WeatherNode(
     val pressure: Int,
     val lightLevel: String,
     val lastRecorded: String,
-    @DrawableRes val iconResId: Int // Holds the drawable resource ID
+    @DrawableRes val iconResId: Int
 )
 
+// Sample weather nodes
 val sampleNodes = listOf(
     WeatherNode(
         name = "Dundalk Node",
@@ -46,7 +44,7 @@ val sampleNodes = listOf(
         pressure = 1013,
         lightLevel = "Available",
         lastRecorded = "10:20 AM",
-        iconResId = R.drawable.cloudy_day_1 // Name of your converted XML file in res/drawable
+        iconResId = R.drawable.cloudy_day_1
     ),
     WeatherNode(
         name = "Drogheda Node",
@@ -88,6 +86,11 @@ fun MainLayout(
     var isLoggedIn by remember { mutableStateOf(false) }
     var activeUser by remember { mutableStateOf("Guest User") }
 
+    // Settings preferences
+    var fontSize by remember { mutableStateOf("Medium") }
+    var highContrast by remember { mutableStateOf(false) }
+    var temperatureUnit by remember { mutableStateOf("°C") }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -99,9 +102,10 @@ fun MainLayout(
                             }
                         ) {
                             Text(
-                                text = selectedNode.name, // Display the node name string
+                                text = selectedNode.name,
                                 maxLines = 1
                             )
+
                             Icon(
                                 imageVector = Icons.Filled.ArrowDropDown,
                                 contentDescription = "Select weather node"
@@ -117,7 +121,7 @@ fun MainLayout(
                             nodes.forEach { node ->
                                 DropdownMenuItem(
                                     text = {
-                                        Text(node.name) // Display the node name string
+                                        Text(node.name)
                                     },
                                     onClick = {
                                         selectedNode = node
@@ -132,7 +136,11 @@ fun MainLayout(
                 title = {
                     Image(
                         painter = painterResource(
-                            id = if (isDarkTheme) R.drawable.urcast_logo_dark else R.drawable.urcast_logo_light
+                            id = if (isDarkTheme) {
+                                R.drawable.urcast_logo_dark
+                            } else {
+                                R.drawable.urcast_logo_light
+                            }
                         ),
                         contentDescription = "urcast logo",
                         modifier = Modifier.height(60.dp),
@@ -141,10 +149,12 @@ fun MainLayout(
                 },
                 actions = {
                     IconButton(
-                        onClick = { selectedScreen = "Settings" }
+                        onClick = {
+                            selectedScreen = "Settings"
+                        }
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Settings,
+                            imageVector = Icons.Filled.Settings,
                             contentDescription = "Settings"
                         )
                     }
@@ -157,35 +167,48 @@ fun MainLayout(
                 NavigationBarItem(
                     selected = selectedScreen == "Home",
                     onClick = { selectedScreen = "Home" },
-                    icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
+                    icon = {
+                        Icon(Icons.Filled.Home, contentDescription = "Home")
+                    },
                     label = { Text("Home") }
                 )
 
                 NavigationBarItem(
                     selected = selectedScreen == "Map",
                     onClick = { selectedScreen = "Map" },
-                    icon = { Icon(Icons.Filled.Place, contentDescription = "Map") },
+                    icon = {
+                        Icon(Icons.Filled.Place, contentDescription = "Map")
+                    },
                     label = { Text("Map") }
                 )
 
                 NavigationBarItem(
                     selected = selectedScreen == "AI Chat",
                     onClick = { selectedScreen = "AI Chat" },
-                    icon = { Icon(Icons.Filled.Chat, contentDescription = "AI Chat") },
+                    icon = {
+                        Icon(Icons.Filled.Chat, contentDescription = "AI Chat")
+                    },
                     label = { Text("AI Chat") }
                 )
 
                 NavigationBarItem(
                     selected = selectedScreen == "History",
                     onClick = { selectedScreen = "History" },
-                    icon = { Icon(Icons.Filled.ShowChart, contentDescription = "History") },
+                    icon = {
+                        Icon(Icons.Filled.ShowChart, contentDescription = "History")
+                    },
                     label = { Text("History") }
                 )
 
                 NavigationBarItem(
                     selected = selectedScreen == "Profile",
                     onClick = { selectedScreen = "Profile" },
-                    icon = { Icon(Icons.Filled.AccountCircle, contentDescription = "Profile") },
+                    icon = {
+                        Icon(
+                            Icons.Filled.AccountCircle,
+                            contentDescription = "Profile"
+                        )
+                    },
                     label = { Text("Profile") }
                 )
             }
@@ -199,10 +222,15 @@ fun MainLayout(
         ) {
             when (selectedScreen) {
                 "Home" -> HomeScreen(node = selectedNode)
+
                 "Map" -> MapScreen()
+
                 "AI Chat" -> AIChatScreen()
+
                 "History" -> HistoryScreen()
+
                 "My Nodes" -> NodeListScreen()
+
                 "Profile" -> ProfileScreen(
                     isLoggedIn = isLoggedIn,
                     username = activeUser,
@@ -215,22 +243,26 @@ fun MainLayout(
                         activeUser = "Guest User"
                     }
                 )
+
+
+                "Settings" -> SettingsScreen(
+                    isDarkTheme = isDarkTheme,
+                    onThemeChange = onThemeChange,
+                    fontSize = fontSize,
+                    onFontSizeChange = { newFontSize ->
+                        fontSize = newFontSize
+                    },
+                    highContrast = highContrast,
+                    onHighContrastChange = { newHighContrast ->
+                        highContrast = newHighContrast
+                    },
+                    temperatureUnit = temperatureUnit,
+                    onTemperatureUnitChange = { newUnit ->
+                        temperatureUnit = newUnit
+                    }
+                )
+
             }
         }
     }
 }
-
-//@Composable
-//fun ProfileScreen() {
-//    TODO("Not yet implemented")
-//}
-//
-//@Composable
-//fun HistoryScreen() {
-//    TODO("Not yet implemented")
-//}
-//
-//@Composable
-//fun MapScreen() {
-//    TODO("Not yet implemented")
-//}
