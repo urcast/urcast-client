@@ -85,6 +85,18 @@ fun WeatherDashboardScreen(node: WeatherNode) {
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+        ForecastHistoryTiles(
+            onPeriodSelected = { index ->
+                when (index) {
+                    0 -> { /* 7 days history */ }
+                    1 -> { /* 7 hours history */ }
+                    2 -> { /* 7 hours forecast */ }
+                    3 -> { /* 7 days forecast */ }
+                }
+            }
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider()
         Spacer(modifier = Modifier.height(20.dp))
 

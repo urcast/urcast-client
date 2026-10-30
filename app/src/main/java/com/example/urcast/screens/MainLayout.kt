@@ -44,7 +44,7 @@ val sampleNodes = listOf(
         pressure = 1013,
         lightLevel = "Available",
         lastRecorded = "10:20 AM",
-        iconResId = R.drawable.cloudy_day_1
+        iconResId = R.drawable.cloudy
     ),
     WeatherNode(
         name = "Drogheda Node",
@@ -53,7 +53,7 @@ val sampleNodes = listOf(
         pressure = 1015,
         lightLevel = "High",
         lastRecorded = "10:15 AM",
-        iconResId = R.drawable.day
+        iconResId = R.drawable.clear_day
     ),
     WeatherNode(
         name = "Dublin Node",
