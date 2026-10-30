@@ -227,15 +227,18 @@ fun MainLayout(
 }
 //@Composable
 //fun ProfileScreen() {
-//    TODO("Not yet implemented")
+//.   DONE
+//    TODO("Discuss implementation")
 //}
 //
 //@Composable
 //fun HistoryScreen() {
-//    TODO("Not yet implemented")
+//    DONE
+//    TODO("Discuss implementation")
 //}
 //
 //@Composable
 //fun MapScreen() {
-//    TODO("Not yet implemented")
+//    DONE
+//    TODO("Discuss implementation")
 //}
