@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 fun MapScreen() {
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
     ) {
         // --- 3. NEARBY WEATHER NODES CARD ---
         Card(

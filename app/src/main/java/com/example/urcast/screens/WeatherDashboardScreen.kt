@@ -20,12 +20,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.urcast.WeatherNode
+import com.example.urcast.components.getWeatherIcon
 
 @Composable
 fun WeatherDashboardScreen(node: WeatherNode) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(16.dp)
     ) {
 
         // --- 1. HERO / LOCAL WEATHER SECTION ---
@@ -41,8 +44,10 @@ fun WeatherDashboardScreen(node: WeatherNode) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = node.iconResId),
-                contentDescription = "Weather condition icon",
+                painter = painterResource(
+                    id = getWeatherIcon(node.iconFileName)
+                ),
+                contentDescription = "${node.iconFileName} weather icon",
                 modifier = Modifier.size(100.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
@@ -154,7 +159,7 @@ fun WeatherDashboardScreen(node: WeatherNode) {
                 modifier = Modifier.weight(1f),
                 icon = Icons.Filled.WbSunny,
                 label = "Light level",
-                value = node.lightLevel,
+                value = "${node.lightLevel} lux",
                 lightContainerColor = Color(0xFFFFFDE7), // Soft Light Amber
                 darkContainerColor = Color(0xFF2E2A1A),  // Soft Dark Amber
                 iconTint = Color(0xFFFBC02D)               // Vibrant Amber/Yellow

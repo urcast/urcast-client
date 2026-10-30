@@ -21,50 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.annotation.DrawableRes
 import com.example.urcast.R
+import com.example.urcast.sampleNodes
 
-// Weather node data model
-data class WeatherNode(
-    val name: String,
-    val temperature: Double,
-    val humidity: Int,
-    val pressure: Int,
-    val lightLevel: String,
-    val lastRecorded: String,
-    @DrawableRes val iconResId: Int
-)
-
-// Sample weather nodes
-val sampleNodes = listOf(
-    WeatherNode(
-        name = "Dundalk Node",
-        temperature = 14.0,
-        humidity = 72,
-        pressure = 1013,
-        lightLevel = "Available",
-        lastRecorded = "10:20 AM",
-        iconResId = R.drawable.cloudy
-    ),
-    WeatherNode(
-        name = "Drogheda Node",
-        temperature = 16.2,
-        humidity = 65,
-        pressure = 1015,
-        lightLevel = "High",
-        lastRecorded = "10:15 AM",
-        iconResId = R.drawable.clear_day
-    ),
-    WeatherNode(
-        name = "Dublin Node",
-        temperature = 13.8,
-        humidity = 80,
-        pressure = 1009,
-        lightLevel = "Low",
-        lastRecorded = "10:22 AM",
-        iconResId = R.drawable.rainy_1
-    )
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
