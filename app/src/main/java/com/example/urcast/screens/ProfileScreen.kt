@@ -1,9 +1,13 @@
 package com.example.urcast.screens
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.ExitToApp
@@ -13,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.urcast.WeatherNode
 import com.example.urcast.sampleNodes
 
 @Composable
@@ -25,24 +30,39 @@ fun ProfileScreen(
     // Controls whether RegisterNodeScreen is shown
     var isRegisteringNode by remember { mutableStateOf(false) }
 
+    var selectedNode by remember {
+        mutableStateOf<WeatherNode?>(null)
+    }
+
     if (!isLoggedIn) {
-        // --- LOGGED OUT STATE: SHOW LOGIN ---
+
         LoginScreen(
             onGuestLogin = { onLoginSuccess("Guest User") },
-            onLoginSuccess = { user -> onLoginSuccess(user) }
+            onLoginSuccess = { user ->
+                onLoginSuccess(user)
+            }
         )
+
     } else if (isRegisteringNode) {
-        // --- REGISTER NODE SCREEN STATE ---
+
         RegisterNodeScreen(
             onNodeRegistered = {
-                // Return to profile dashboard once registered
                 isRegisteringNode = false
             },
             onCancel = {
-                // Return to profile dashboard without registering
                 isRegisteringNode = false
             }
         )
+
+    } else if (selectedNode != null) {
+
+        NodeDetailsScreen(
+            node = selectedNode!!,
+            onBack = {
+                selectedNode = null
+            }
+        )
+
     } else {
         // --- LOGGED IN STATE: SHOW USER PROFILE & NODES ---
         Column(
@@ -105,8 +125,22 @@ fun ProfileScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                        .padding(bottom = 12.dp)
+                        .clickable {
+                            selectedNode = node
+                        },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.outlineVariant
+                    ),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 3.dp,
+                        pressedElevation = 6.dp
+                    )
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),
@@ -131,6 +165,13 @@ fun ProfileScreen(
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = "View node details",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
             }
@@ -147,3 +188,6 @@ fun ProfileScreen(
         }
     }
 }
+
+//TODO feedback after logout
+//TODO

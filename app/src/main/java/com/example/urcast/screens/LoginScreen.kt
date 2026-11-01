@@ -24,7 +24,7 @@ fun LoginScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     // Hardcoded test user credentials
-    val hardcodedUser = "admin"
+    val hardcodedUser = "test"
     val hardcodedPass = "1234"
 
     val buttonShape = RoundedCornerShape(12.dp)
@@ -121,6 +121,6 @@ fun LoginScreen(
             Text("Sign Up as Contributor")
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text("admin, 1234")
+        Text("test, 1234")
     }
 }
