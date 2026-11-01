@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.urcast.WeatherNode
 import com.example.urcast.sampleNodes
+import com.example.urcast.screens.NotificationSettings
 
 @Composable
 fun ProfileScreen(
@@ -175,7 +176,11 @@ fun ProfileScreen(
                     }
                 }
             }
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
 
+            NotificationSettings()
             Spacer(modifier = Modifier.height(12.dp))
 
             // Action Button to Add New Node
@@ -190,4 +195,3 @@ fun ProfileScreen(
 }
 
 //TODO feedback after logout
-//TODO
