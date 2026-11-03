@@ -9,7 +9,7 @@ val sampleNodes = listOf(
         pressure = 1013,
         lightLevel = 450,
         lastRecorded = "10:20 AM",
-        iconFileName = "clear-day",
+        iconFileName = "haze_day",
         latitude = 54.0000,
         longitude = -6.4050,
 
@@ -44,7 +44,7 @@ val sampleNodes = listOf(
         pressure = 1015,
         lightLevel = 850,
         lastRecorded = "10:15 AM",
-        iconFileName = "haze",
+        iconFileName = "clear_day",
         latitude = 53.7179,
         longitude = -6.3561,
 
@@ -63,7 +63,7 @@ val sampleNodes = listOf(
         pressure = 1009,
         lightLevel = 120,
         lastRecorded = "10:22 AM",
-        iconFileName = "rainy-1",
+        iconFileName = "rainy_1_day",
         latitude = 53.3498,
         longitude = -6.2603,
 

@@ -142,24 +142,6 @@ fun MainLayout(
                 )
 
                 NavigationBarItem(
-                    selected = selectedScreen == "AI Chat",
-                    onClick = { selectedScreen = "AI Chat" },
-                    icon = {
-                        Icon(Icons.Filled.Chat, contentDescription = "AI Chat")
-                    },
-                    label = { Text("AI Chat") }
-                )
-
-                NavigationBarItem(
-                    selected = selectedScreen == "History",
-                    onClick = { selectedScreen = "History" },
-                    icon = {
-                        Icon(Icons.Filled.ShowChart, contentDescription = "History")
-                    },
-                    label = { Text("History") }
-                )
-
-                NavigationBarItem(
                     selected = selectedScreen == "Profile",
                     onClick = { selectedScreen = "Profile" },
                     icon = {
@@ -183,12 +165,6 @@ fun MainLayout(
                 "Home" -> HomeScreen(node = selectedNode)
 
                 "Map" -> MapScreen()
-
-                "AI Chat" -> AIChatScreen()
-
-                "History" -> HistoryScreen()
-
-                "My Nodes" -> NodeListScreen()
 
                 "Profile" -> ProfileScreen(
                     isLoggedIn = isLoggedIn,
@@ -225,17 +201,3 @@ fun MainLayout(
         }
     }
 }
-//@Composable
-//fun ProfileScreen() {
-//    TODO("Not yet implemented")
-//}
-//
-//@Composable
-//fun HistoryScreen() {
-//    TODO("Not yet implemented")
-//}
-//
-//@Composable
-//fun MapScreen() {
-//    TODO("Not yet implemented")
-//}

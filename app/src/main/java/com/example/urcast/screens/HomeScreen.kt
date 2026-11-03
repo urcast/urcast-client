@@ -27,9 +27,9 @@ fun HomeScreen(node: WeatherNode) {
 
         MapScreen()
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        HistoryScreen()
+//        Spacer(modifier = Modifier.height(16.dp))
+//
+//        HistoryScreen()
     }
 
 }

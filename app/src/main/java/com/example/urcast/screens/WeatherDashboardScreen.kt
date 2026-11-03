@@ -3,8 +3,6 @@ package com.example.urcast.screens
 import com.example.urcast.components.ReadingTile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Speed
@@ -90,17 +88,8 @@ fun WeatherDashboardScreen(node: WeatherNode) {
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-        ForecastHistoryTiles(
-            onPeriodSelected = { index ->
-                when (index) {
-                    0 -> { /* 7 days history */ }
-                    1 -> { /* 7 hours history */ }
-                    2 -> { /* 7 hours forecast */ }
-                    3 -> { /* 7 days forecast */ }
-                }
-            }
-        )
 
+        WeatherOverview()
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider()
         Spacer(modifier = Modifier.height(20.dp))
