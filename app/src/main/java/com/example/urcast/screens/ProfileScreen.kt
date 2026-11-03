@@ -26,7 +26,8 @@ fun ProfileScreen(
     isLoggedIn: Boolean,
     username: String,
     onLoginSuccess: (String) -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    temperatureUnit: String
 ) {
     // Controls whether RegisterNodeScreen is shown
     var isRegisteringNode by remember { mutableStateOf(false) }
@@ -59,9 +60,8 @@ fun ProfileScreen(
 
         NodeDetailsScreen(
             node = selectedNode!!,
-            onBack = {
-                selectedNode = null
-            }
+            onBack = { selectedNode = null },
+            temperatureUnit = temperatureUnit
         )
 
     } else {
@@ -162,7 +162,10 @@ fun ProfileScreen(
                             )
                         }
                         Text(
-                            text = "${node.temperature.toInt()}°C",
+                            text = "${if (temperatureUnit == "°F")
+                                (node.temperature * 9 / 5 + 32).toInt()
+                            else
+                                node.temperature.toInt()}$temperatureUnit",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )

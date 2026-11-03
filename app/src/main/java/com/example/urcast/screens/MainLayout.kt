@@ -173,6 +173,7 @@ fun MainLayout(
                 "Profile" -> ProfileScreen(
                     isLoggedIn = isLoggedIn,
                     username = activeUser,
+                    temperatureUnit = temperatureUnit,
                     onLoginSuccess = { user ->
                         activeUser = user
                         isLoggedIn = true

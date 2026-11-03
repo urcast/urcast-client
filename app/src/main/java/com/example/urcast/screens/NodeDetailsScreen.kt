@@ -16,7 +16,8 @@ import com.example.urcast.WeatherNode
 @Composable
 fun NodeDetailsScreen(
     node: WeatherNode,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    temperatureUnit: String
 ) {
     Column(
         modifier = Modifier
@@ -126,7 +127,13 @@ fun NodeDetailsScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        Text("Temperature: ${node.temperature}°C")
+        val displayedTemperature = if (temperatureUnit == "°F") {
+            node.temperature * 9 / 5 + 32
+        } else {
+            node.temperature
+        }
+
+        Text("Temperature: ${displayedTemperature.toInt()}$temperatureUnit")
         Text("Humidity: ${node.humidity}%")
         Text("Pressure: ${node.pressure} hPa")
         Text("Light level: ${node.lightLevel} lux")
