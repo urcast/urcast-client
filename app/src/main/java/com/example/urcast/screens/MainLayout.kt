@@ -29,7 +29,9 @@ import com.example.urcast.sampleNodes
 @Composable
 fun MainLayout(
     isDarkTheme: Boolean,
-    onThemeChange: (Boolean) -> Unit
+    onThemeChange: (Boolean) -> Unit,
+    fontSize: String,
+    onFontSizeChange: (String) -> Unit
 ) {
     var selectedScreen by remember { mutableStateOf("Home") }
     val nodes = sampleNodes
@@ -46,7 +48,6 @@ fun MainLayout(
     var activeUser by remember { mutableStateOf("Guest User") }
 
     // Settings preferences
-    var fontSize by remember { mutableStateOf("Medium") }
     var highContrast by remember { mutableStateOf(false) }
     var temperatureUnit by remember { mutableStateOf("°C") }
 
@@ -184,9 +185,7 @@ fun MainLayout(
                     isDarkTheme = isDarkTheme,
                     onThemeChange = onThemeChange,
                     fontSize = fontSize,
-                    onFontSizeChange = { newFontSize ->
-                        fontSize = newFontSize
-                    },
+                    onFontSizeChange = onFontSizeChange,
                     highContrast = highContrast,
                     onHighContrastChange = { newHighContrast ->
                         highContrast = newHighContrast

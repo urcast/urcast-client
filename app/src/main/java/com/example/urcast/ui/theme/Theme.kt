@@ -10,6 +10,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.CompositionLocalProvider
 
 
 private val LightColorScheme = lightColorScheme(
@@ -33,8 +34,8 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun UrcastTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
+    fontSize: String = "Medium",
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -49,7 +50,7 @@ fun UrcastTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = appTypography(fontSize),
         content = content
     )
 }

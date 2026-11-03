@@ -22,11 +22,17 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             var isDarkTheme by remember { mutableStateOf(false) }
+            var fontSize by remember { mutableStateOf("Medium") }
 
-            UrcastTheme(darkTheme = isDarkTheme) {
+            UrcastTheme(
+                darkTheme = isDarkTheme,
+                fontSize = fontSize
+            ) {
                 MainLayout(
                     isDarkTheme = isDarkTheme,
-                    onThemeChange = { isDarkTheme = it }
+                    onThemeChange = { isDarkTheme = it },
+                    fontSize = fontSize,
+                    onFontSizeChange = { fontSize = it }
                 )
             }
         }
