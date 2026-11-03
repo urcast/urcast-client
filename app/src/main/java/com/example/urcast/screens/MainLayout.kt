@@ -33,7 +33,9 @@ fun MainLayout(
     fontSize: String,
     onFontSizeChange: (String) -> Unit,
     highContrast: Boolean,
-    onHighContrastChange: (Boolean) -> Unit
+    onHighContrastChange: (Boolean) -> Unit,
+    temperatureUnit: String,
+    onTemperatureUnitChange: (String) -> Unit
 ) {
     var selectedScreen by remember { mutableStateOf("Home") }
     val nodes = sampleNodes
@@ -48,9 +50,6 @@ fun MainLayout(
 
     var isLoggedIn by remember { mutableStateOf(false) }
     var activeUser by remember { mutableStateOf("Guest User") }
-
-    // Settings preferences
-    var temperatureUnit by remember { mutableStateOf("°C") }
 
     Scaffold(
         topBar = {
@@ -164,7 +163,10 @@ fun MainLayout(
                 .padding(innerPadding)
         ) {
             when (selectedScreen) {
-                "Home" -> HomeScreen(node = selectedNode)
+                "Home" -> HomeScreen(
+                    node = selectedNode,
+                    temperatureUnit = temperatureUnit
+                )
 
                 "Map" -> MapScreen()
 
@@ -190,9 +192,7 @@ fun MainLayout(
                     highContrast = highContrast,
                     onHighContrastChange = onHighContrastChange,
                     temperatureUnit = temperatureUnit,
-                    onTemperatureUnitChange = { newUnit ->
-                        temperatureUnit = newUnit
-                    }
+                    onTemperatureUnitChange = onTemperatureUnitChange
                 )
 
             }

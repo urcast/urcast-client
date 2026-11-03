@@ -58,7 +58,7 @@ private val forecastPeriods = listOf(
 )
 
 @Composable
-fun WeatherForecast(page: Int) {
+fun WeatherForecast(page: Int, temperatureUnit: String) {
     val period = forecastPeriods[page.coerceIn(0, 1)]
 
     Column(
@@ -111,7 +111,21 @@ fun WeatherForecast(page: Int) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = period.values.getOrElse(index) { "" },
+                        text = period.values.getOrElse(index) { "" }.let { value ->
+                            val celsius = value.removeSuffix("°").toDoubleOrNull()
+
+                            if (celsius == null) {
+                                value
+                            } else {
+                                val temperature = if (temperatureUnit == "°F") {
+                                    (celsius * 9 / 5) + 32
+                                } else {
+                                    celsius
+                                }
+
+                                "${temperature.toInt()}$temperatureUnit"
+                            }
+                        },
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

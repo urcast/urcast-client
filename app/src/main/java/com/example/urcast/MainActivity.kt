@@ -24,6 +24,7 @@ class MainActivity : ComponentActivity() {
             var isDarkTheme by remember { mutableStateOf(false) }
             var fontSize by remember { mutableStateOf("Medium") }
             var highContrast by remember { mutableStateOf(false) }
+            var temperatureUnit by remember { mutableStateOf("°C") }
 
             UrcastTheme(
                 darkTheme = isDarkTheme,
@@ -36,7 +37,9 @@ class MainActivity : ComponentActivity() {
                     fontSize = fontSize,
                     onFontSizeChange = { fontSize = it },
                     highContrast = highContrast,
-                    onHighContrastChange = { highContrast = it }
+                    onHighContrastChange = { highContrast = it },
+                    temperatureUnit = temperatureUnit,
+                    onTemperatureUnitChange = { temperatureUnit = it }
 
                 )
             }

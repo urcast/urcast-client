@@ -13,7 +13,10 @@ import androidx.compose.ui.unit.dp
 import com.example.urcast.WeatherNode
 
 @Composable
-fun HomeScreen(node: WeatherNode) {
+fun HomeScreen(
+    node: WeatherNode,
+    temperatureUnit: String
+) {
     // Renders the main dashboard content for the selected node
     Column(
         modifier = Modifier
@@ -21,7 +24,10 @@ fun HomeScreen(node: WeatherNode) {
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        WeatherDashboardScreen(node = node)
+        WeatherDashboardScreen(
+            node = node,
+            temperatureUnit = temperatureUnit
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 

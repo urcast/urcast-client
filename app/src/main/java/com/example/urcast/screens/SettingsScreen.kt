@@ -138,13 +138,3 @@ private fun SettingRow(
         control()
     }
 }
-
-
-// TODO: Apply the selected font size throughout the app.
-// Font size
-
-// TODO: Implement high-contrast colours throughout the app.
-// High contrast
-
-// TODO: Convert displayed temperatures based on the selected unit.
-// Temperature unit

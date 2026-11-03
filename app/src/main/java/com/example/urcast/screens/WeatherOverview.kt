@@ -21,8 +21,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun WeatherOverview(
+    temperatureUnit: String,
     onPeriodSelected: (Int) -> Unit = {}
-) {
+){
     val pagerState = rememberPagerState(
         initialPage = 2,
         pageCount = { 4 }
@@ -62,8 +63,8 @@ fun WeatherOverview(
                 when (page) {
                     0 -> WeatherHistory(page = 0)
                     1 -> WeatherHistory(page = 1)
-                    2 -> WeatherForecast(page = 0)
-                    3 -> WeatherForecast(page = 1)
+                    2 -> WeatherForecast(page = 0, temperatureUnit = temperatureUnit)
+                    3 -> WeatherForecast(page = 1, temperatureUnit = temperatureUnit)
                 }
             }
         }

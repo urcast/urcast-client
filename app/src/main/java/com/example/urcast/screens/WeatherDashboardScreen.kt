@@ -22,13 +22,24 @@ import com.example.urcast.WeatherNode
 import com.example.urcast.components.getWeatherIcon
 
 @Composable
-fun WeatherDashboardScreen(node: WeatherNode) {
+fun WeatherDashboardScreen(
+    node: WeatherNode,
+    temperatureUnit: String
+) {
+    // Converts Celsius to Fahrenheit when selected.
+    val displayedTemperature = if (temperatureUnit == "°F") {
+        (node.temperature * 9 / 5) + 32
+    } else {
+        node.temperature
+    }
+
+    val temperatureText = "${displayedTemperature.toInt()}$temperatureUnit"
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
         // --- 1. HERO / LOCAL WEATHER SECTION ---
         Text(
             text = "YOUR LOCAL WEATHER",
@@ -50,7 +61,7 @@ fun WeatherDashboardScreen(node: WeatherNode) {
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = "${node.temperature.toInt()}°C",
+                text = temperatureText,
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -89,12 +100,12 @@ fun WeatherDashboardScreen(node: WeatherNode) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        WeatherOverview()
+        WeatherOverview(temperatureUnit = temperatureUnit)
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider()
         Spacer(modifier = Modifier.height(20.dp))
 
-        // --- 2. CURRENT READINGS GRID (2x2 TILES WITH ADAPTIVE COLORS) ---
+        // --- 2. CURRENT READINGS GRID ---
         Text(
             text = "Current readings",
             style = MaterialTheme.typography.titleMedium,
@@ -112,19 +123,19 @@ fun WeatherDashboardScreen(node: WeatherNode) {
                 modifier = Modifier.weight(1f),
                 icon = Icons.Filled.Thermostat,
                 label = "Temperature",
-                value = "${node.temperature.toInt()}°C",
-                lightContainerColor = Color(0xFFFFEBEE), // Soft Light Red
-                darkContainerColor = Color(0xFF2C1E1A),  // Soft Dark Red
-                iconTint = Color(0xFFE53935)               // Vibrant Red/Orange
+                value = temperatureText,
+                lightContainerColor = Color(0xFFFFEBEE),
+                darkContainerColor = Color(0xFF2C1E1A),
+                iconTint = Color(0xFFE53935)
             )
             ReadingTile(
                 modifier = Modifier.weight(1f),
                 icon = Icons.Filled.WaterDrop,
                 label = "Humidity",
                 value = "${node.humidity}%",
-                lightContainerColor = Color(0xFFE3F2FD), // Soft Light Blue
-                darkContainerColor = Color(0xFF1A2332),  // Soft Dark Blue
-                iconTint = Color(0xFF1E88E5)               // Vibrant Blue
+                lightContainerColor = Color(0xFFE3F2FD),
+                darkContainerColor = Color(0xFF1A2332),
+                iconTint = Color(0xFF1E88E5)
             )
         }
 
@@ -140,18 +151,18 @@ fun WeatherDashboardScreen(node: WeatherNode) {
                 icon = Icons.Filled.Speed,
                 label = "Pressure",
                 value = "${node.pressure} hPa",
-                lightContainerColor = Color(0xFFF3E5F5), // Soft Light Purple
-                darkContainerColor = Color(0xFF221A30),  // Soft Dark Purple
-                iconTint = Color(0xFF8E24AA)               // Vibrant Purple
+                lightContainerColor = Color(0xFFF3E5F5),
+                darkContainerColor = Color(0xFF221A30),
+                iconTint = Color(0xFF8E24AA)
             )
             ReadingTile(
                 modifier = Modifier.weight(1f),
                 icon = Icons.Filled.WbSunny,
                 label = "Light level",
                 value = "${node.lightLevel} lux",
-                lightContainerColor = Color(0xFFFFFDE7), // Soft Light Amber
-                darkContainerColor = Color(0xFF2E2A1A),  // Soft Dark Amber
-                iconTint = Color(0xFFFBC02D)               // Vibrant Amber/Yellow
+                lightContainerColor = Color(0xFFFFFDE7),
+                darkContainerColor = Color(0xFF2E2A1A),
+                iconTint = Color(0xFFFBC02D)
             )
         }
     }
