@@ -23,16 +23,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             var isDarkTheme by remember { mutableStateOf(false) }
             var fontSize by remember { mutableStateOf("Medium") }
+            var highContrast by remember { mutableStateOf(false) }
 
             UrcastTheme(
                 darkTheme = isDarkTheme,
-                fontSize = fontSize
+                fontSize = fontSize,
+                highContrast = highContrast
             ) {
                 MainLayout(
                     isDarkTheme = isDarkTheme,
                     onThemeChange = { isDarkTheme = it },
                     fontSize = fontSize,
-                    onFontSizeChange = { fontSize = it }
+                    onFontSizeChange = { fontSize = it },
+                    highContrast = highContrast,
+                    onHighContrastChange = { highContrast = it }
+
                 )
             }
         }

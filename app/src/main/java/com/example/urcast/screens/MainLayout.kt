@@ -31,7 +31,9 @@ fun MainLayout(
     isDarkTheme: Boolean,
     onThemeChange: (Boolean) -> Unit,
     fontSize: String,
-    onFontSizeChange: (String) -> Unit
+    onFontSizeChange: (String) -> Unit,
+    highContrast: Boolean,
+    onHighContrastChange: (Boolean) -> Unit
 ) {
     var selectedScreen by remember { mutableStateOf("Home") }
     val nodes = sampleNodes
@@ -48,7 +50,6 @@ fun MainLayout(
     var activeUser by remember { mutableStateOf("Guest User") }
 
     // Settings preferences
-    var highContrast by remember { mutableStateOf(false) }
     var temperatureUnit by remember { mutableStateOf("°C") }
 
     Scaffold(
@@ -187,9 +188,7 @@ fun MainLayout(
                     fontSize = fontSize,
                     onFontSizeChange = onFontSizeChange,
                     highContrast = highContrast,
-                    onHighContrastChange = { newHighContrast ->
-                        highContrast = newHighContrast
-                    },
+                    onHighContrastChange = onHighContrastChange,
                     temperatureUnit = temperatureUnit,
                     onTemperatureUnitChange = { newUnit ->
                         temperatureUnit = newUnit

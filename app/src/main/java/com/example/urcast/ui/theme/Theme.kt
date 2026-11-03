@@ -10,7 +10,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
-import androidx.compose.runtime.CompositionLocalProvider
 
 
 private val LightColorScheme = lightColorScheme(
@@ -31,19 +30,52 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = Color(0xFFE5F1F3)
 )
 
+private val HighContrastLightColorScheme = lightColorScheme(
+    primary = Color.Black,
+    onPrimary = Color.White,
+    secondary = Color(0xFFE0E0E0),
+    onSecondary = Color.Black,
+    background = Color.White,
+    onBackground = Color.Black,
+    surface = Color.White,
+    onSurface = Color.Black,
+    error = Color(0xFFB00020),
+    onError = Color.White
+)
+
+private val HighContrastDarkColorScheme = darkColorScheme(
+    primary = Color.Yellow,
+    onPrimary = Color.Black,
+    secondary = Color(0xFFBDBDBD),
+    onSecondary = Color.Black,
+    background = Color.Black,
+    onBackground = Color.White,
+    surface = Color.Black,
+    onSurface = Color.White,
+    error = Color(0xFFFF6B6B),
+    onError = Color.Black
+)
+
 @Composable
 fun UrcastTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     fontSize: String = "Medium",
+    highContrast: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
+        highContrast && darkTheme -> HighContrastDarkColorScheme
+        highContrast -> HighContrastLightColorScheme
+
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (darkTheme) {
+                dynamicDarkColorScheme(context)
+            } else {
+                dynamicLightColorScheme(context)
+            }
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
