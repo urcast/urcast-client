@@ -6,6 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun SettingsScreen(
@@ -21,6 +23,7 @@ fun SettingsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
         Text(
@@ -67,6 +70,7 @@ fun SettingsScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
         HorizontalDivider()
 
         // High contrast
@@ -80,6 +84,7 @@ fun SettingsScreen(
             )
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
         HorizontalDivider()
 
         // Temperature unit
@@ -104,6 +109,11 @@ fun SettingsScreen(
                 }
             }
         }
+        HorizontalDivider()
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        NotificationSettings()
     }
 }
 @Composable

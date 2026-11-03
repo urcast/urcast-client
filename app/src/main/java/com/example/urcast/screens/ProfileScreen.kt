@@ -183,7 +183,6 @@ fun ProfileScreen(
                 modifier = Modifier.padding(vertical = 16.dp)
             )
 
-            NotificationSettings()
             Spacer(modifier = Modifier.height(12.dp))
 
             // Action Button to Add New Node
