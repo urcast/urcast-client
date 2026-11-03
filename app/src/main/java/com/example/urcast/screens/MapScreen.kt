@@ -17,6 +17,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import kotlinx.coroutines.launch
 
 @Composable
 fun MapScreen() {
@@ -64,6 +68,34 @@ fun MapScreen() {
             LatLng(53.85, -6.35),
             8f
         )
+    }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(hasLocationPermission) {
+        if (hasLocationPermission) {
+            val locationClient =
+                LocationServices.getFusedLocationProviderClient(context)
+
+            try {
+                locationClient.lastLocation.addOnSuccessListener { location ->
+                    if (location != null) {
+                        scope.launch {
+                            cameraPositionState.animate(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(
+                                        location.latitude,
+                                        location.longitude
+                                    ),
+                                    13f
+                                )
+                            )
+                        }
+                    }
+                }
+            } catch (e: SecurityException) {
+                // Location permission is no longer available.
+            }
+        }
     }
 
     Column(
