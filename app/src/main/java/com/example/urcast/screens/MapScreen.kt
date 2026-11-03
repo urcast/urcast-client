@@ -10,9 +10,50 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.example.urcast.WeatherNode
 import com.example.urcast.sampleNodes
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun MapScreen() {
+    val context = LocalContext.current
+
+    var hasLocationPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val locationPermissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            hasLocationPermission =
+                permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                        permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        }
+
+    LaunchedEffect(Unit) {
+        if (!hasLocationPermission) {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
 
     var selectedNode by remember {
         mutableStateOf<WeatherNode?>(null)
@@ -40,7 +81,13 @@ fun MapScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp),
-            cameraPositionState = cameraPositionState
+            cameraPositionState = cameraPositionState,
+            properties = MapProperties(
+                isMyLocationEnabled = hasLocationPermission
+            ),
+            uiSettings = MapUiSettings(
+                myLocationButtonEnabled = hasLocationPermission
+            )
         ) {
             sampleNodes.forEach { node ->
 
