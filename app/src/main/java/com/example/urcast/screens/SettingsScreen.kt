@@ -9,6 +9,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import com.example.urcast.NotificationHelper
+
 @Composable
 fun SettingsScreen(
     isDarkTheme: Boolean,
@@ -20,6 +29,15 @@ fun SettingsScreen(
     temperatureUnit: String,
     onTemperatureUnitChange: (String) -> Unit
 ) {
+    val context = LocalContext.current
+    val notificationPermissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) {
+                NotificationHelper.showTestNotification(context)
+            }
+        }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -114,6 +132,28 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         NotificationSettings()
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                if (
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    notificationPermissionLauncher.launch(
+                        Manifest.permission.POST_NOTIFICATIONS
+                    )
+                } else {
+                    NotificationHelper.showTestNotification(context)
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Test notification")
+        }
     }
 }
 @Composable
