@@ -1,0 +1,54 @@
+package com.example.urcast.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.urcast.data.remote.dto.NodeDto
+import com.example.urcast.data.repository.NodeRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+data class NodesUiState(
+    val nodes: List<NodeDto> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
+)
+
+class NodeViewModel(
+    private val repository: NodeRepository = NodeRepository()
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(
+        NodesUiState(isLoading = true)
+    )
+
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        fetchNodes()
+    }
+
+    fun fetchNodes() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                isLoading = true,
+                errorMessage = null
+            )
+
+            try {
+                val nodes = repository.getNodes()
+
+                _uiState.value = NodesUiState(
+                    nodes = nodes,
+                    isLoading = false
+                )
+
+            } catch (e: Exception) {
+                _uiState.value = NodesUiState(
+                    isLoading = false,
+                    errorMessage = e.message ?: "Unable to load nodes"
+                )
+            }
+        }
+    }
+}

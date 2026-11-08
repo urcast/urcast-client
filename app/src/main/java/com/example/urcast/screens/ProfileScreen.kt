@@ -17,9 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.urcast.WeatherNode
-import com.example.urcast.sampleNodes
 import com.example.urcast.screens.NotificationSettings
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.urcast.viewmodel.NodeViewModel
+import com.example.urcast.data.remote.dto.NodeDto
 
 @Composable
 fun ProfileScreen(
@@ -32,8 +33,11 @@ fun ProfileScreen(
     // Controls whether RegisterNodeScreen is shown
     var isRegisteringNode by remember { mutableStateOf(false) }
 
+    val nodeViewModel: NodeViewModel = viewModel()
+    val uiState by nodeViewModel.uiState.collectAsState()
+
     var selectedNode by remember {
-        mutableStateOf<WeatherNode?>(null)
+        mutableStateOf<NodeDto?>(null)
     }
 
     if (!isLoggedIn) {
@@ -58,10 +62,9 @@ fun ProfileScreen(
 
     } else if (selectedNode != null) {
 
-        NodeDetailsScreen(
+        RegisteredNodeDetailsScreen(
             node = selectedNode!!,
-            onBack = { selectedNode = null },
-            temperatureUnit = temperatureUnit
+            onBack = { selectedNode = null }
         )
 
     } else {
@@ -122,63 +125,83 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             // Node List
-            sampleNodes.forEach { node ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp)
-                        .clickable {
-                            selectedNode = node
-                        },
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface
-                    ),
-                    border = BorderStroke(
-                        1.dp,
-                        MaterialTheme.colorScheme.outlineVariant
-                    ),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 3.dp,
-                        pressedElevation = 6.dp
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Cloud,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(text = node.name, fontWeight = FontWeight.Bold)
-                            Text(
-                                text = "Last active: ${node.lastRecorded}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Text(
-                            text = "${if (temperatureUnit == "°F")
-                                (node.temperature * 9 / 5 + 32).toInt()
-                            else
-                                node.temperature.toInt()}$temperatureUnit",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator()
+                    Text("Loading weather nodes...")
+                }
 
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            contentDescription = "View node details",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                uiState.errorMessage != null -> {
+                    Text(
+                        text = uiState.errorMessage!!,
+                        color = MaterialTheme.colorScheme.error
+                    )
+
+                    Button(onClick = { nodeViewModel.fetchNodes() }) {
+                        Text("Retry")
+                    }
+                }
+
+                uiState.nodes.isEmpty() -> {
+                    Text("No registered weather nodes found.")
+                }
+
+                else -> {
+                    uiState.nodes.forEach { node ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 12.dp)
+                                .clickable {
+                                    selectedNode = node
+                                },
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Cloud,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+
+                                Spacer(Modifier.width(12.dp))
+
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = node.node_name,
+                                        fontWeight = FontWeight.Bold
+                                    )
+
+                                    Text(
+                                        text = node.location_name ?: "Location unavailable",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+
+                                    Text(
+                                        text = "Status: ${node.status}",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+
+                                    Text(
+                                        text = "Last seen: ${node.last_seen ?: "Not recorded"}",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                    contentDescription = "View node details",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
                     }
                 }
             }
+
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 16.dp)
             )
