@@ -1,6 +1,6 @@
 # urcast Android Client README
 
-> A centralized, community-driven local weather monitoring system. This repository contains the client-side **Kotlin Android application** built with **Jetpack Compose** and designed with strict adherence to **Universal Design (UD)** and accessibility standards.
+> A centralized, community-driven local weather monitoring system. This repository contains the client-side **Kotlin Android application** built with **Jetpack Compose** and designed with consideration for **Universal Design (UD)** and accessibility standards.
 
 ---
 
@@ -8,10 +8,10 @@
 
 The **urcast Android Client** serves two primary user types:
 
-1. **Viewers:** Local residents who want simple, quick, and accurate local weather information for their exact geographic location without unnecessary clutter.
-2. **Contributors:** Community members who set up, register, and monitor Raspberry Pi weather nodes to contribute environmental data to the system.
+1. **Viewers:** Local residents who want simple, quick, and accurate local weather information for their geographic location.
+2. **Contributors:** Community members who register and monitor Raspberry Pi weather nodes to contribute environmental data to the system.
 
-The app interfaces directly with the central FastAPI backend via RESTful APIs, providing real-time measurements (temperature, humidity, pressure, and light), historical charts, node diagnostics, and customizable alerts.
+The app interfaces with the central FastAPI backend via RESTful APIs, retrieving weather measurements (temperature, humidity, pressure, and light), displaying registered nodes, and allowing contributors to manage their weather stations.
 
 ---
 
@@ -19,29 +19,29 @@ The app interfaces directly with the central FastAPI backend via RESTful APIs, p
 
 ### For Viewers
 
-* **Live Weather Dashboard:** View current temperature, humidity, atmospheric pressure, and light levels from nearby contributor nodes.
-* **Interactive Map:** Explore nearby active weather stations using an interactive map.
-* **Historical Trends:** View 24-hour and 7-day environmental trends via interactive graphs.
-* **Favorites:** Save and pin preferred weather nodes for quick access from the home screen.
-* **Short-Term Predictions:** Simple local forecasts calculated from barometric pressure and temperature trends.
-* **Custom Notifications & Alerts:** Configure threshold alerts (e.g., temperature dropping below freezing) and update reminders *(Could Have feature)*.
+* **Weather Dashboard:** View temperature, humidity, atmospheric pressure, and light levels from contributor nodes.
+* **Interactive Map:** Explore registered weather stations using an interactive map.
+* **Node Selection:** Select different weather stations to view their associated weather measurements.
+* **Historical Trends:** View 24-hour and 7-day environmental trends via interactive graphs *(Further integration required)*.
+* **Short-Term Predictions:** Local forecasts based on weather measurements *(Planned feature)*.
+* **Custom Notifications & Alerts:** Configure threshold alerts and update reminders *(Could Have feature)*.
 
 ### For Contributors
 
-* **Account Management:** Secure registration and token-based authentication.
-* **Node Registration & Configuration:** Link and configure new Raspberry Pi weather stations to a contributor profile.
-* **Node Diagnostics & Health:** Monitor node uptime, Wi-Fi connectivity, and individual sensor statuses (DHT22, BMP280, BH1750, GPS).
+* **Account Management:** Create contributor accounts and log in using token-based authentication (JWT).
+* **Node Registration:** Register new Raspberry Pi weather stations by providing a node name, location, latitude, and longitude.
+* **Node Monitoring:** View registered weather stations and their associated environmental readings.
 
 ---
 
 ## Universal Design (UD) & Accessibility
 
-The app is built from the ground up to support diverse digital literacy levels, screen sizes, and accessibility needs:
+The app is designed to support diverse digital literacy levels, screen sizes, and accessibility needs:
 
-* **Perceptible Information:** Clear layouts, familiar icons, and distinct text labels. Weather conditions never rely solely on color to communicate state.
+* **Perceptible Information:** Clear layouts, familiar icons, and distinct text labels. Weather conditions do not rely solely on colour to communicate information.
 * **Equitable & Intuitive Use:** Consistent iconography and minimal navigation steps to reach essential data.
-* **High Contrast & Typography:** Supports high-contrast color palettes (supporting both light and dark themes) and dynamic text sizing.
-* **Tolerance for Error:** Clear validation messages, inline form error feedback, and confirmation prompts for critical actions.
+* **High Contrast & Typography:** Consideration for readable text, colour contrast, and accessible layouts.
+* **Tolerance for Error:** Input validation and inline error messages for contributor registration and node registration.
 
 ---
 
@@ -49,6 +49,11 @@ The app is built from the ground up to support diverse digital literacy levels, 
 
 * **Language:** Kotlin
 * **UI Framework:** Jetpack Compose (Declarative UI)
+* **API Integration:** Retrofit
+* **HTTP Client:** OkHttp
+* **JSON Conversion:** Gson
+* **Authentication:** JWT (JSON Web Tokens)
+* **Backend:** FastAPI (REST API)
 
 ---
 
@@ -63,11 +68,10 @@ The app is built from the ground up to support diverse digital literacy levels, 
 ### Installation & Setup
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/urcast/urcast-client.git
-
 ```
-
 
 2. Open the project in **Android Studio**.
 3. Sync Gradle dependencies.
