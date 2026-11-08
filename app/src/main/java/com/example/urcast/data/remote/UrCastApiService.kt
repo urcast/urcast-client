@@ -10,6 +10,7 @@ import com.example.urcast.data.remote.dto.RegisterRequest
 import com.example.urcast.data.remote.dto.RegisterResponse
 import com.example.urcast.data.remote.dto.ReadingDto
 import retrofit2.http.Path
+import com.example.urcast.data.remote.dto.CreateNodeRequest
 
 interface UrCastApiService {
 
@@ -33,4 +34,9 @@ interface UrCastApiService {
     suspend fun getReading(
         @Path("reading_id") readingId: Int
     ): ReadingDto
+
+    @POST("api/node")
+    suspend fun createNode(
+        @Body request: CreateNodeRequest
+    ): NodeDto
 }

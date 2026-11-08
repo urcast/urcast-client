@@ -2,6 +2,7 @@ package com.example.urcast.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.urcast.data.remote.TokenManager
 import com.example.urcast.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,7 +31,7 @@ class AuthViewModel(
             try {
                 val response = repository.login(email, password)
 
-                accessToken = response.access_token
+                TokenManager.accessToken = response.access_token
 
                 _uiState.value = AuthUiState(
                     isLoggedIn = true

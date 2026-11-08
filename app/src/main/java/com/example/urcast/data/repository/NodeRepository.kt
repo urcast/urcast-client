@@ -4,6 +4,7 @@ import com.example.urcast.data.remote.RetrofitClient
 import com.example.urcast.data.remote.UrCastApiService
 import com.example.urcast.data.remote.dto.NodeDto
 import com.example.urcast.data.remote.dto.ReadingDto
+import com.example.urcast.data.remote.dto.CreateNodeRequest
 
 class NodeRepository(
     private val api: UrCastApiService = RetrofitClient.api
@@ -14,5 +15,9 @@ class NodeRepository(
 
     suspend fun getReadings(): List<ReadingDto> {
         return api.getReadings()
+    }
+
+    suspend fun createNode(request: CreateNodeRequest): NodeDto {
+        return api.createNode(request)
     }
 }

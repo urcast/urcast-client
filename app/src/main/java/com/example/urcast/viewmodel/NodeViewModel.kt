@@ -8,6 +8,7 @@ import com.example.urcast.data.repository.NodeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import com.example.urcast.data.remote.dto.CreateNodeRequest
 
 data class NodesUiState(
     val nodes: List<NodeDto> = emptyList(),
@@ -51,6 +52,24 @@ class NodeViewModel(
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     errorMessage = e.message ?: "Unable to load weather data"
+                )
+            }
+        }
+    }
+    fun registerNode(
+        request: CreateNodeRequest,
+        onSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                repository.createNode(request)
+
+                fetchData()
+                onSuccess()
+
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = e.message ?: "Unable to register node"
                 )
             }
         }
