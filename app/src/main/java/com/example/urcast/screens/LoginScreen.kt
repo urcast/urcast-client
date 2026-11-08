@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -16,16 +15,13 @@ import com.example.urcast.R
 
 @Composable
 fun LoginScreen(
-    onGuestLogin: () -> Unit,
-    onLoginSuccess: (String) -> Unit
+    onLogin: (String, String) -> Unit,
+    onSignUp: () -> Unit,
+    isLoading: Boolean = false,
+    errorMessage: String? = null
 ) {
-    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
-    // Hardcoded test user credentials
-    val hardcodedUser = "test"
-    val hardcodedPass = "1234"
 
     val buttonShape = RoundedCornerShape(12.dp)
 
@@ -48,29 +44,24 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
-            value = username,
-            onValueChange = {
-                username = it
-                errorMessage = null // Clear error when typing
-            },
-            label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth()
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = password,
-            onValueChange = {
-                password = it
-                errorMessage = null // Clear error when typing
-            },
+            onValueChange = { password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
-        // Show error message if credentials don't match
         errorMessage?.let { error ->
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -83,44 +74,36 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = {
-                if (username == hardcodedUser && password == hardcodedPass) {
-                    onLoginSuccess(username)
-                } else {
-                    errorMessage = "Invalid credentials. Try $hardcodedUser / $hardcodedPass"
-                }
-            },
+            onClick = { onLogin(email, password) },
             modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading &&
+                    email.isNotBlank() &&
+                    password.isNotBlank(),
             shape = buttonShape,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
-            Text("Log In")
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            } else {
+                Text("Log In")
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(
-            onClick = { onGuestLogin() },
-            modifier = Modifier.fillMaxWidth(),
-            shape = buttonShape,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF176B70),
-                contentColor = Color.White
-            )
-        ) {
-            Text("Viewer Login")
-        }
-
         TextButton(
-            onClick = { /* Sign up */ },
-            shape = buttonShape
+            onClick = onSignUp,
+            shape = buttonShape,
+            enabled = !isLoading
         ) {
             Text("Sign Up as Contributor")
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("test, 1234")
     }
 }

@@ -1,29 +1,30 @@
 package com.example.urcast.screens
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.*
-import com.example.urcast.WeatherNode
-import com.example.urcast.sampleNodes
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import com.example.urcast.data.remote.dto.NodeDto
+import com.example.urcast.data.remote.dto.ReadingDto
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 import kotlinx.coroutines.launch
 
 @Composable
-fun MapScreen() {
+fun MapScreen(
+    nodes: List<NodeDto>,
+    readings: List<ReadingDto>
+) {
     val context = LocalContext.current
 
     var hasLocationPermission by remember {
@@ -60,7 +61,7 @@ fun MapScreen() {
     }
 
     var selectedNode by remember {
-        mutableStateOf<WeatherNode?>(null)
+        mutableStateOf<NodeDto?>(null)
     }
 
     val cameraPositionState = rememberCameraPositionState {
@@ -73,10 +74,10 @@ fun MapScreen() {
 
     LaunchedEffect(hasLocationPermission) {
         if (hasLocationPermission) {
-            val locationClient =
-                LocationServices.getFusedLocationProviderClient(context)
-
             try {
+                val locationClient =
+                    LocationServices.getFusedLocationProviderClient(context)
+
                 locationClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
                         scope.launch {
@@ -93,7 +94,7 @@ fun MapScreen() {
                     }
                 }
             } catch (e: SecurityException) {
-                // Location permission is no longer available.
+                // Location permission is unavailable.
             }
         }
     }
@@ -121,28 +122,41 @@ fun MapScreen() {
                 myLocationButtonEnabled = hasLocationPermission
             )
         ) {
-            sampleNodes.forEach { node ->
+            nodes.forEach { node ->
 
-                Marker(
-                    state = rememberMarkerState(
-                        position = LatLng(
-                            node.latitude,
-                            node.longitude
-                        )
-                    ),
-                    title = node.name,
-                    snippet = "${node.temperature}°C",
-                    onClick = {
-                        selectedNode = node
-                        true
-                    }
-                )
+                val latitude = node.latitude
+                val longitude = node.longitude
+
+                if (latitude != null && longitude != null) {
+                    val latestReading = readings
+                        .filter { it.node_id == node.node_id }
+                        .maxByOrNull { it.recorded_at }
+
+                    Marker(
+                        state = rememberMarkerState(
+                            position = LatLng(latitude, longitude)
+                        ),
+                        title = node.node_name,
+                        snippet = latestReading?.temperature?.let {
+                            "$it°C"
+                        } ?: "No readings available",
+                        onClick = {
+                            selectedNode = node
+                            true
+                        }
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         selectedNode?.let { node ->
+
+            val latestReading = readings
+                .filter { it.node_id == node.node_id }
+                .maxByOrNull { it.recorded_at }
+
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -150,12 +164,33 @@ fun MapScreen() {
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = node.name,
+                        text = node.node_name,
                         style = MaterialTheme.typography.titleMedium
                     )
 
-                    Text("Temperature: ${node.temperature}°C")
-                    Text("Humidity: ${node.humidity}%")
+                    Text(
+                        "Temperature: ${
+                            latestReading?.temperature?.let { "$it°C" } ?: "N/A"
+                        }"
+                    )
+
+                    Text(
+                        "Humidity: ${
+                            latestReading?.humidity?.let { "$it%" } ?: "N/A"
+                        }"
+                    )
+
+                    Text(
+                        "Pressure: ${
+                            latestReading?.pressure?.let { "$it hPa" } ?: "N/A"
+                        }"
+                    )
+
+                    Text(
+                        "Light level: ${
+                            latestReading?.light_level?.let { "$it lux" } ?: "N/A"
+                        }"
+                    )
                 }
             }
         } ?: Text(
