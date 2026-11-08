@@ -159,7 +159,10 @@ fun MainLayout(
                     }
                 }
 
-                "Map" -> MapScreen()
+                "Map" -> MapScreen(
+                    nodes = uiState.nodes,
+                    readings = uiState.readings
+                )
 
                 "Profile" -> ProfileScreen(
                     isLoggedIn = isLoggedIn,
