@@ -43,7 +43,6 @@ fun ProfileScreen(
     if (!isLoggedIn) {
 
         LoginScreen(
-            onGuestLogin = { onLoginSuccess("Guest User") },
             onLoginSuccess = { user ->
                 onLoginSuccess(user)
             }

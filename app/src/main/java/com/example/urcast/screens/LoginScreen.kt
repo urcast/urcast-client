@@ -16,7 +16,6 @@ import com.example.urcast.R
 
 @Composable
 fun LoginScreen(
-    onGuestLogin: () -> Unit,
     onLoginSuccess: (String) -> Unit
 ) {
     var username by remember { mutableStateOf("") }
@@ -98,20 +97,6 @@ fun LoginScreen(
             )
         ) {
             Text("Log In")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(
-            onClick = { onGuestLogin() },
-            modifier = Modifier.fillMaxWidth(),
-            shape = buttonShape,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF176B70),
-                contentColor = Color.White
-            )
-        ) {
-            Text("Viewer Login")
         }
 
         TextButton(

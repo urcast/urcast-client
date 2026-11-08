@@ -54,45 +54,7 @@ fun MainLayout(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                navigationIcon = {
-                    Box {
-                        TextButton(
-                            onClick = {
-                                nodeMenuExpanded = true
-                            }
-                        ) {
-                            Text(
-                                text = selectedNode.name,
-                                maxLines = 1
-                            )
-
-                            Icon(
-                                imageVector = Icons.Filled.ArrowDropDown,
-                                contentDescription = "Select weather node"
-                            )
-                        }
-
-                        DropdownMenu(
-                            expanded = nodeMenuExpanded,
-                            onDismissRequest = {
-                                nodeMenuExpanded = false
-                            }
-                        ) {
-                            nodes.forEach { node ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(node.name)
-                                    },
-                                    onClick = {
-                                        selectedNode = node
-                                        nodeMenuExpanded = false
-                                        selectedScreen = "Home"
-                                    }
-                                )
-                            }
-                        }
-                    }
-                },
+                navigationIcon = {},
                 title = {
                     Image(
                         painter = painterResource(
@@ -165,6 +127,8 @@ fun MainLayout(
             when (selectedScreen) {
                 "Home" -> HomeScreen(
                     node = selectedNode,
+                    nodes = nodes,
+                    onNodeSelected = { selectedNode = it },
                     temperatureUnit = temperatureUnit
                 )
 
