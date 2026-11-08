@@ -1,6 +1,5 @@
 package com.example.urcast.screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -17,10 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.urcast.screens.NotificationSettings
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.urcast.viewmodel.NodeViewModel
 import com.example.urcast.data.remote.dto.NodeDto
+import com.example.urcast.viewmodel.AuthViewModel
+import com.example.urcast.viewmodel.NodeViewModel
 
 @Composable
 fun ProfileScreen(
@@ -30,22 +29,69 @@ fun ProfileScreen(
     onLogout: () -> Unit,
     temperatureUnit: String
 ) {
-    // Controls whether RegisterNodeScreen is shown
+    // Controls which screen is displayed
     var isRegisteringNode by remember { mutableStateOf(false) }
+    var isRegisteringContributor by remember { mutableStateOf(false) }
 
+    // ViewModels
     val nodeViewModel: NodeViewModel = viewModel()
-    val uiState by nodeViewModel.uiState.collectAsState()
+    val nodeState by nodeViewModel.uiState.collectAsState()
 
+    val authViewModel: AuthViewModel = viewModel()
+    val authState by authViewModel.uiState.collectAsState()
+
+    // Selected node
     var selectedNode by remember {
         mutableStateOf<NodeDto?>(null)
     }
 
-    if (!isLoggedIn) {
+    // Stores the email used during login
+    var loginEmail by remember {
+        mutableStateOf("")
+    }
+
+    // Handle successful login
+    LaunchedEffect(authState.isLoggedIn) {
+        if (authState.isLoggedIn) {
+            onLoginSuccess(loginEmail)
+        }
+    }
+
+    // Handle successful contributor registration
+    LaunchedEffect(authState.isRegistrationSuccessful) {
+        if (authState.isRegistrationSuccessful) {
+            isRegisteringContributor = false
+            authViewModel.resetState()
+        }
+    }
+
+    if (!isLoggedIn && isRegisteringContributor) {
+
+        RegisterContributorScreen(
+            onRegister = { username, email, password ->
+                authViewModel.register(username, email, password)
+            },
+            onBackToLogin = {
+                isRegisteringContributor = false
+                authViewModel.resetState()
+            },
+            isLoading = authState.isLoading,
+            errorMessage = authState.errorMessage
+        )
+
+    } else if (!isLoggedIn) {
 
         LoginScreen(
-            onLoginSuccess = { user ->
-                onLoginSuccess(user)
-            }
+            onLogin = { email, password ->
+                loginEmail = email
+                authViewModel.login(email, password)
+            },
+            onSignUp = {
+                authViewModel.resetState()
+                isRegisteringContributor = true
+            },
+            isLoading = authState.isLoading,
+            errorMessage = authState.errorMessage
         )
 
     } else if (isRegisteringNode) {
@@ -63,21 +109,26 @@ fun ProfileScreen(
 
         RegisteredNodeDetailsScreen(
             node = selectedNode!!,
-            onBack = { selectedNode = null }
+            onBack = {
+                selectedNode = null
+            }
         )
 
     } else {
-        // --- LOGGED IN STATE: SHOW USER PROFILE & NODES ---
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            // 1. Account Header Card
+
+            // Account Header Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
@@ -90,19 +141,29 @@ fun ProfileScreen(
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    Column(modifier = Modifier.weight(1f)) {
+
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
                         Text(
                             text = username,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = if (username == "Guest User") "Viewer Account" else "Contributor",
+                            text = "Contributor",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    IconButton(onClick = onLogout) {
+
+                    IconButton(
+                        onClick = {
+                            authViewModel.resetState()
+                            loginEmail = ""
+                            onLogout()
+                        }
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.ExitToApp,
                             contentDescription = "Log out",
@@ -114,7 +175,7 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 2. User Registered Nodes Section
+            // User Registered Nodes Section
             Text(
                 text = "MY WEATHER NODES",
                 style = MaterialTheme.typography.labelSmall,
@@ -125,28 +186,37 @@ fun ProfileScreen(
 
             // Node List
             when {
-                uiState.isLoading -> {
+                nodeState.isLoading -> {
+
                     CircularProgressIndicator()
                     Text("Loading weather nodes...")
                 }
 
-                uiState.errorMessage != null -> {
+                nodeState.errorMessage != null -> {
+
                     Text(
-                        text = uiState.errorMessage!!,
+                        text = nodeState.errorMessage!!,
                         color = MaterialTheme.colorScheme.error
                     )
 
-                    Button(onClick = { nodeViewModel.fetchNodes() }) {
+                    Button(
+                        onClick = {
+                            nodeViewModel.fetchNodes()
+                        }
+                    ) {
                         Text("Retry")
                     }
                 }
 
-                uiState.nodes.isEmpty() -> {
+                nodeState.nodes.isEmpty() -> {
+
                     Text("No registered weather nodes found.")
                 }
 
                 else -> {
-                    uiState.nodes.forEach { node ->
+
+                    nodeState.nodes.forEach { node ->
+
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -168,7 +238,10 @@ fun ProfileScreen(
 
                                 Spacer(Modifier.width(12.dp))
 
-                                Column(modifier = Modifier.weight(1f)) {
+                                Column(
+                                    modifier = Modifier.weight(1f)
+                                ) {
+
                                     Text(
                                         text = node.node_name,
                                         fontWeight = FontWeight.Bold
@@ -207,7 +280,6 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Action Button to Add New Node
             Button(
                 onClick = { isRegisteringNode = true }, // Navigates to RegisterNodeScreen
                 modifier = Modifier.fillMaxWidth()

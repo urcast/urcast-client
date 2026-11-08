@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 data class AuthUiState(
     val isLoading: Boolean = false,
     val isLoggedIn: Boolean = false,
+    val isRegistrationSuccessful: Boolean = false,
     val errorMessage: String? = null
 )
 
@@ -41,5 +42,30 @@ class AuthViewModel(
                 )
             }
         }
+    }
+    fun register(
+        username: String,
+        email: String,
+        password: String
+    ) {
+        viewModelScope.launch {
+            _uiState.value = AuthUiState(isLoading = true)
+
+            try {
+                repository.register(username, email, password)
+
+                _uiState.value = AuthUiState(
+                    isRegistrationSuccessful = true
+                )
+
+            } catch (e: Exception) {
+                _uiState.value = AuthUiState(
+                    errorMessage = e.message ?: "Registration failed"
+                )
+            }
+        }
+    }
+    fun resetState() {
+        _uiState.value = AuthUiState()
     }
 }
