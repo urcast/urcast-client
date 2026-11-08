@@ -3,6 +3,7 @@ package com.example.urcast.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.urcast.data.remote.dto.NodeDto
+import com.example.urcast.data.remote.dto.ReadingDto
 import com.example.urcast.data.repository.NodeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,6 +11,7 @@ import kotlinx.coroutines.launch
 
 data class NodesUiState(
     val nodes: List<NodeDto> = emptyList(),
+    val readings: List<ReadingDto> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
@@ -25,10 +27,10 @@ class NodeViewModel(
     val uiState = _uiState.asStateFlow()
 
     init {
-        fetchNodes()
+        fetchData()
     }
 
-    fun fetchNodes() {
+    fun fetchData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isLoading = true,
@@ -37,16 +39,18 @@ class NodeViewModel(
 
             try {
                 val nodes = repository.getNodes()
+                val readings = repository.getReadings()
 
                 _uiState.value = NodesUiState(
                     nodes = nodes,
+                    readings = readings,
                     isLoading = false
                 )
 
             } catch (e: Exception) {
-                _uiState.value = NodesUiState(
+                _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    errorMessage = e.message ?: "Unable to load nodes"
+                    errorMessage = e.message ?: "Unable to load weather data"
                 )
             }
         }

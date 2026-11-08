@@ -201,7 +201,7 @@ fun ProfileScreen(
 
                     Button(
                         onClick = {
-                            nodeViewModel.fetchNodes()
+                            nodeViewModel.fetchData()
                         }
                     ) {
                         Text("Retry")

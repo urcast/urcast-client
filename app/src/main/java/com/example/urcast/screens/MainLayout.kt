@@ -1,4 +1,3 @@
-
 package com.example.urcast.screens
 
 import androidx.compose.foundation.Image
@@ -6,24 +5,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.urcast.R
-import com.example.urcast.sampleNodes
-
+import com.example.urcast.WeatherNode
+import com.example.urcast.viewmodel.NodeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,15 +31,35 @@ fun MainLayout(
     onTemperatureUnitChange: (String) -> Unit
 ) {
     var selectedScreen by remember { mutableStateOf("Home") }
-    val nodes = sampleNodes
 
-    var selectedNode by remember {
-        mutableStateOf(nodes[0])
+    val nodeViewModel: NodeViewModel = viewModel()
+    val uiState by nodeViewModel.uiState.collectAsState()
+
+    val nodes = remember(uiState.nodes, uiState.readings) {
+        uiState.nodes.map { apiNode ->
+            val latestReading = uiState.readings
+                .filter { it.node_id == apiNode.node_id }
+                .maxByOrNull { it.recorded_at }
+
+            WeatherNode(
+                name = apiNode.node_name,
+                temperature = latestReading?.temperature ?: 0.0,
+                humidity = latestReading?.humidity?.toInt() ?: 0,
+                pressure = latestReading?.pressure?.toInt() ?: 0,
+                lightLevel = latestReading?.light_level?.toInt() ?: 0,
+                lastRecorded = latestReading?.recorded_at ?: "No readings yet",
+                iconFileName = "clear_day",
+                latitude = apiNode.latitude ?: 0.0,
+                longitude = apiNode.longitude ?: 0.0
+            )
+        }
     }
 
-    var nodeMenuExpanded by remember {
-        mutableStateOf(false)
-    }
+    var selectedNodeName by remember { mutableStateOf<String?>(null) }
+
+    val selectedNode = nodes.firstOrNull {
+        it.name == selectedNodeName
+    } ?: nodes.firstOrNull()
 
     var isLoggedIn by remember { mutableStateOf(false) }
     var activeUser by remember { mutableStateOf("Guest User") }
@@ -54,7 +67,6 @@ fun MainLayout(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                navigationIcon = {},
                 title = {
                     Image(
                         painter = painterResource(
@@ -70,20 +82,15 @@ fun MainLayout(
                     )
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            selectedScreen = "Settings"
-                        }
-                    ) {
+                    IconButton(onClick = { selectedScreen = "Settings" }) {
                         Icon(
-                            imageVector = Icons.Filled.Settings,
+                            Icons.Filled.Settings,
                             contentDescription = "Settings"
                         )
                     }
                 }
             )
         },
-
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
@@ -125,12 +132,32 @@ fun MainLayout(
                 .padding(innerPadding)
         ) {
             when (selectedScreen) {
-                "Home" -> HomeScreen(
-                    node = selectedNode,
-                    nodes = nodes,
-                    onNodeSelected = { selectedNode = it },
-                    temperatureUnit = temperatureUnit
-                )
+                "Home" -> {
+                    when {
+                        uiState.isLoading -> {
+                            CircularProgressIndicator()
+                        }
+
+                        uiState.errorMessage != null -> {
+                            Text("Error: ${uiState.errorMessage}")
+                        }
+
+                        selectedNode != null -> {
+                            HomeScreen(
+                                node = selectedNode,
+                                nodes = nodes,
+                                onNodeSelected = {
+                                    selectedNodeName = it.name
+                                },
+                                temperatureUnit = temperatureUnit
+                            )
+                        }
+
+                        else -> {
+                            Text("No weather stations found.")
+                        }
+                    }
+                }
 
                 "Map" -> MapScreen()
 
@@ -148,7 +175,6 @@ fun MainLayout(
                     }
                 )
 
-
                 "Settings" -> SettingsScreen(
                     isDarkTheme = isDarkTheme,
                     onThemeChange = onThemeChange,
@@ -159,7 +185,6 @@ fun MainLayout(
                     temperatureUnit = temperatureUnit,
                     onTemperatureUnitChange = onTemperatureUnitChange
                 )
-
             }
         }
     }
