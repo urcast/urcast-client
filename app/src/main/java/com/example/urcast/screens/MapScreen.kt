@@ -3,6 +3,7 @@ package com.example.urcast.screens
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -19,6 +20,7 @@ import com.example.urcast.data.remote.dto.NodeDto
 import com.example.urcast.data.remote.dto.ReadingDto
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -101,7 +103,7 @@ fun MapScreen(
                     }
                 }
             } catch (e: SecurityException) {
-                // Location permission is unavailable.
+                Log.e("UrCastMap", "Location permission unavailable", e)
             }
         }
     }
@@ -132,6 +134,7 @@ fun MapScreen(
                         .filter { it.node_id == node.node_id }
                         .maxByOrNull { it.recorded_at }
 
+                    val isSelected = selectedNode?.node_id == node.node_id
                     Marker(
                         state = rememberMarkerState(
                             position = LatLng(latitude, longitude)
@@ -140,10 +143,18 @@ fun MapScreen(
                         snippet = latestReading?.temperature?.let {
                             "$it°C"
                         } ?: "No readings available",
+                        icon = BitmapDescriptorFactory.defaultMarker(
+                            if (isSelected) {
+                                BitmapDescriptorFactory.HUE_BLUE
+                            } else {
+                                BitmapDescriptorFactory.HUE_RED
+                            }
+                        ),
                         onClick = {
                             selectedNode = node
                             true
-                        }
+                        },
+                        zIndex = if (isSelected) 1f else 0f
                     )
                 }
             }
@@ -166,6 +177,7 @@ fun MapScreen(
                         LocalDateTime.now()
                     ).toMinutes()
                 } catch (e: Exception) {
+                    Log.e("UrCastMap", "Could not parse node reading timestamp: ${it.recorded_at}", e)
                     Long.MAX_VALUE
                 }
             } ?: Long.MAX_VALUE
