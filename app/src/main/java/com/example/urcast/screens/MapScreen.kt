@@ -2,12 +2,16 @@ package com.example.urcast.screens
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -19,7 +23,10 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MapScreen(
     nodes: List<NodeDto>,
@@ -87,7 +94,7 @@ fun MapScreen(
                                         location.latitude,
                                         location.longitude
                                     ),
-                                    13f
+                                    9f
                                 )
                             )
                         }
@@ -99,31 +106,24 @@ fun MapScreen(
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-
-        Text(
-            text = "Nearby weather nodes",
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
+    Box(modifier = Modifier.fillMaxSize()) {
 
         GoogleMap(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp),
+            modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             properties = MapProperties(
                 isMyLocationEnabled = hasLocationPermission
             ),
             uiSettings = MapUiSettings(
-                myLocationButtonEnabled = hasLocationPermission
-            )
+                myLocationButtonEnabled = hasLocationPermission,
+                zoomControlsEnabled = true,
+                zoomGesturesEnabled = true
+            ),
+            onMapClick = {
+                selectedNode = null
+            }
         ) {
             nodes.forEach { node ->
-
                 val latitude = node.latitude
                 val longitude = node.longitude
 
@@ -149,24 +149,77 @@ fun MapScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
         selectedNode?.let { node ->
 
             val latestReading = readings
                 .filter { it.node_id == node.node_id }
                 .maxByOrNull { it.recorded_at }
 
+            val timeAgo = latestReading?.let {
+                getTimeAgo(it.recorded_at)
+            }
+
+            val minutesAgo = latestReading?.let {
+                try {
+                    Duration.between(
+                        LocalDateTime.parse(it.recorded_at),
+                        LocalDateTime.now()
+                    ).toMinutes()
+                } catch (e: Exception) {
+                    Long.MAX_VALUE
+                }
+            } ?: Long.MAX_VALUE
+
+            val isOnline = minutesAgo >= 0 && minutesAgo <= 15
+
             Card(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White,
+                    contentColor = Color.DarkGray
+                ),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 8.dp
+                )
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = node.node_name,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.DarkGray
+                        )
+
+                        Text(
+                            text = if (isOnline) "+ Online" else "- Offline",
+                            color = if (isOnline) {
+                                Color(0xFF2E7D32)
+                            } else {
+                                Color(0xFFC62828)
+                            }
+                        )
+                    }
+
                     Text(
-                        text = node.node_name,
-                        style = MaterialTheme.typography.titleMedium
+                        text = if (latestReading != null) {
+                            "Last available: $timeAgo"
+                        } else {
+                            "No readings available"
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
                     )
+
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
                         "Temperature: ${
@@ -193,8 +246,28 @@ fun MapScreen(
                     )
                 }
             }
-        } ?: Text(
-            text = "Select a marker to view weather information."
-        )
+        }
+    }
+}
+@RequiresApi(Build.VERSION_CODES.O)
+private fun getTimeAgo(recordedAt: String): String {
+    return try {
+        val readingTime = LocalDateTime.parse(recordedAt)
+
+        val minutes = Duration.between(
+            readingTime,
+            LocalDateTime.now()
+        ).toMinutes()
+
+        when {
+            minutes < 0 -> "just now"
+            minutes < 1 -> "just now"
+            minutes < 60 -> "$minutes minutes ago"
+            minutes < 1440 -> "${minutes / 60} hours ago"
+            else -> "${minutes / 1440} days ago"
+        }
+    } catch (e: Exception) {
+        println("URCAST TIMESTAMP ERROR: ${e.message}")
+        "Unknown"
     }
 }
